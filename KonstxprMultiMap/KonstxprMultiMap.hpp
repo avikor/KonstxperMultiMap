@@ -14,7 +14,7 @@ template<typename Key>
 concept KeyType = std::equality_comparable<Key> && HasLessThan<Key>;
 
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp = std::less<std::pair<Key, Value>>>
+template <KeyType Key, typename Value, std::size_t SIZE>
 class KonstxperMultiMap
 {
 public:
@@ -44,16 +44,16 @@ private:
     [[nodiscard]] constexpr std::size_t find_last_of(const Key& key) const noexcept;
 };
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
+template <KeyType Key, typename Value, std::size_t SIZE>
 template<typename... KVs>
-constexpr KonstxperMultiMap<Key, Value, SIZE, Comp>::KonstxperMultiMap(KVs&&... kvs) noexcept
+constexpr KonstxperMultiMap<Key, Value, SIZE>::KonstxperMultiMap(KVs&&... kvs) noexcept
     : m_arr{ kvs... }
 {
-    std::ranges::sort(m_arr, Comp{});
+    std::ranges::sort(m_arr);
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::find_first_of(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::find_first_of(const Key& key) const noexcept
 {
     // for small contiguous containers linear search might be faster than binary search
     // so throughout this class we'll use linear search rather than binary search
@@ -70,8 +70,8 @@ constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::find_first_of(c
     return SIZE;
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::find_last_of(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::find_last_of(const Key& key) const noexcept
 {
     auto it{ std::crbegin(m_arr) };
     for (; it != std::crend(m_arr); ++it)
@@ -85,14 +85,14 @@ constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::find_last_of(co
     return SIZE;
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-consteval std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::size() const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+consteval std::size_t KonstxperMultiMap<Key, Value, SIZE>::size() const noexcept
 {
     return SIZE;
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE, Comp>::at(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::at(const Key& key) const noexcept
 {
     if (find_first_of(key) != SIZE)
     {
@@ -104,20 +104,20 @@ constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE, Comp>::at(con
     }
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr bool KonstxperMultiMap<Key, Value, SIZE, Comp>::contains(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr bool KonstxperMultiMap<Key, Value, SIZE>::contains(const Key& key) const noexcept
 {
     return at(key).has_value();
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE, Comp>::lowerBound(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::lowerBound(const Key& key) const noexcept
 {
     return at(key);
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE, Comp>::upperBound(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::upperBound(const Key& key) const noexcept
 {
     if (find_last_of(key) != SIZE)
     {
@@ -129,14 +129,14 @@ constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE, Comp>::upperB
     }
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr auto KonstxperMultiMap<Key, Value, SIZE, Comp>::equalRange(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr auto KonstxperMultiMap<Key, Value, SIZE>::equalRange(const Key& key) const noexcept
 {
     return std::ranges::subrange(m_arr.cbegin() + find_first_of(key), m_arr.cbegin() + find_last_of(key)) | std::views::values;
 }
 
-template <KeyType Key, typename Value, std::size_t SIZE, typename Comp>
-constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE, Comp>::count(const Key& key) const noexcept
+template <KeyType Key, typename Value, std::size_t SIZE>
+constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::count(const Key& key) const noexcept
 {
     return equalRange(key).size();
 }
