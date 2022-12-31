@@ -6,6 +6,7 @@
 
 template<typename T>
 concept HasLessThan = requires(T a, T b) {
+    { a < a } -> std::convertible_to<bool>;
     { a < b } -> std::convertible_to<bool>;
 };
 
