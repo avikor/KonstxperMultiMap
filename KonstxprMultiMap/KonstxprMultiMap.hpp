@@ -38,7 +38,7 @@ public:
     [[nodiscard]] constexpr std::size_t count(const Key& key) const noexcept;
 
 private:
-    std::array<std::pair<Key, Value>, SIZE> m_arr;
+    std::array<std::pair<Key, Value>, SIZE> arr_;
 
     [[nodiscard]] constexpr std::size_t find_first_of(const Key& key) const noexcept;
     [[nodiscard]] constexpr std::size_t find_last_of(const Key& key) const noexcept;
@@ -47,9 +47,9 @@ private:
 template <KeyType Key, typename Value, std::size_t SIZE>
 template<typename... KVs>
 constexpr KonstxperMultiMap<Key, Value, SIZE>::KonstxperMultiMap(KVs&&... kvs) noexcept
-    : m_arr{ kvs... }
+    : arr_{ kvs... }
 {
-    std::ranges::sort(m_arr);
+    std::ranges::sort(arr_);
 }
 
 template <KeyType Key, typename Value, std::size_t SIZE>
@@ -58,12 +58,12 @@ constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::find_first_of(const K
     // for small contiguous containers linear search might be faster than binary search
     // so throughout this class we'll use linear search rather than binary search
     
-    auto it{ std::cbegin(m_arr) };
-    for (; it != std::cend(m_arr); ++it)
+    auto it{ std::cbegin(arr_) };
+    for (; it != std::cend(arr_); ++it)
     {
         if (it->first == key)
         {
-            return it - std::cbegin(m_arr);
+            return it - std::cbegin(arr_);
         }
     }
 
@@ -73,12 +73,12 @@ constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::find_first_of(const K
 template <KeyType Key, typename Value, std::size_t SIZE>
 constexpr std::size_t KonstxperMultiMap<Key, Value, SIZE>::find_last_of(const Key& key) const noexcept
 {
-    auto it{ std::crbegin(m_arr) };
-    for (; it != std::crend(m_arr); ++it)
+    auto it{ std::crbegin(arr_) };
+    for (; it != std::crend(arr_); ++it)
     {
         if (it->first == key)
         {
-            return std::crend(m_arr) - it;
+            return std::crend(arr_) - it;
         }
     }
 
@@ -96,7 +96,7 @@ constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::at(const Key
 {
     if (find_first_of(key) != SIZE)
     {
-        return { m_arr[find_first_of(key)].second };
+        return { arr_[find_first_of(key)].second };
     }
     else
     {
@@ -121,7 +121,7 @@ constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::upperBound(c
 {
     if (find_last_of(key) != SIZE)
     {
-        return { m_arr[find_last_of(key)].second };
+        return { arr_[find_last_of(key)].second };
     }
     else
     {
@@ -132,7 +132,7 @@ constexpr std::optional<Value> KonstxperMultiMap<Key, Value, SIZE>::upperBound(c
 template <KeyType Key, typename Value, std::size_t SIZE>
 constexpr auto KonstxperMultiMap<Key, Value, SIZE>::equalRange(const Key& key) const noexcept
 {
-    return std::ranges::subrange(m_arr.cbegin() + find_first_of(key), m_arr.cbegin() + find_last_of(key)) | std::views::values;
+    return std::ranges::subrange(arr_.cbegin() + find_first_of(key), arr_.cbegin() + find_last_of(key)) | std::views::values;
 }
 
 template <KeyType Key, typename Value, std::size_t SIZE>
