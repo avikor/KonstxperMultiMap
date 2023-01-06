@@ -4,7 +4,7 @@
 
 consteval void test_size_at_contains_methods()
 {
-    constexpr KonstxperMultiMap<char, int, 3U> kMultiMap{ 
+    constexpr kmp::KonstxperMultiMap<char, int, 3U> kMultiMap{ 
         std::pair<char, int>{ 'b' , 1 },
         std::pair<char, int>{ 'a', 0 },
         std::pair<char, int>{ 'c', 2 }
@@ -32,7 +32,7 @@ consteval void test_size_at_contains_methods()
 
 consteval void test_lower_upper_equal_range_methods()
 {
-    constexpr KonstxperMultiMap<char, int, 7U> kMultiMap{
+    constexpr kmp::KonstxperMultiMap<char, int, 7U> kMultiMap{
         std::pair<char, int>{ 'a', 0 },
         std::pair<char, int>{ 'a', 1 },
         std::pair<char, int>{ 'b', 2 },
@@ -60,7 +60,7 @@ consteval void test_lower_upper_equal_range_methods()
 
 constexpr void test_equal_range_and_count_methods()
 {
-    constexpr KonstxperMultiMap<char, int, 7U> kMultiMap{
+    constexpr kmp::KonstxperMultiMap<char, int, 7U> kMultiMap{
         std::pair<char, int>{ 'b', 0 },
         std::pair<char, int>{ 'a', -1 },
         std::pair<char, int>{ 'b', 1 },
