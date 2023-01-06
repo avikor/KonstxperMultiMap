@@ -1,6 +1,7 @@
 #include "KonstxprMultiMap.hpp"
 
 #include <cassert>
+#include <iostream>
 
 consteval void test_size_at_contains_methods()
 {
@@ -99,6 +100,8 @@ constexpr void test_equal_range_and_count_methods()
 
 int main()
 {
+    std::cout << "hello KonstxperMultiMap\n";
+
     test_size_at_contains_methods();
 
     test_lower_upper_equal_range_methods();
